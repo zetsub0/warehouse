@@ -1,0 +1,14 @@
+env: "local"
+
+server:
+  port: ":88080"
+
+mongo:
+  hosts:
+    - "0.0.0.0:27017"
+  db_name: "warehouse"
+  auth_source: "warehouse"
+  password: "password"
+  login: "warehouse"
+  low_execution_time: "10m"
+  connect_count: 500

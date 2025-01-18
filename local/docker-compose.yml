@@ -1,0 +1,13 @@
+services:
+  mongodb:
+    image: mongo:8.0.3
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: warehouse
+      MONGO_USER_DB: warehouse
+    volumes:
+      - ./mongodb/initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./data/mongo:/data/db
+    ports:
+      - 27017:27017
+    restart: "no"

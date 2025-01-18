@@ -2,10 +2,8 @@ package mongo
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"warehouse/internal/config"
@@ -59,6 +57,7 @@ func getDB(ctx context.Context, cfg config.Mongo, maxPoolSize uint64) (*mongo.Da
 	return client.Database(cfg.DbName), err
 }
 
+// New returns Store adapter.
 func New(ctx context.Context, cfg config.Mongo) (*Store, error) {
 	db, err := getDB(ctx, cfg, cfg.ConnectCount)
 
@@ -80,20 +79,4 @@ func New(ctx context.Context, cfg config.Mongo) (*Store, error) {
 	}
 
 	return store, err
-}
-
-func (s *Store) AddSale(
-	ctx context.Context,
-	sale struct {
-	SaleDate time.Time
-	Client   string
-	Price    int
-}) (primitive.ObjectID, error) {
-
-	res, err := s.salesCl.InsertOne(ctx, sale)
-	if err != nil {
-		return primitive.ObjectID{}, fmt.Errorf("не получилось вставить: %w", err)
-	}
-
-	return res.InsertedID.(primitive.ObjectID), nil
 }

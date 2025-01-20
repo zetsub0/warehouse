@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"warehouse/internal/adapters/db/mongo"
 	"warehouse/internal/config"
@@ -20,23 +19,34 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// err = store.UpsertProduct(ctx, "Стакан", 123)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// err = store.UpsertProduct(ctx, "Снеговик", 123)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// err = store.UpsertProduct(ctx, "Стакан", 123)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// err = store.UpsertProduct(ctx, "Снеговик", 123)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// err = store.UpsertProduct(ctx, "Стакан", 123)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// err = store.UpsertProduct(ctx, "Снеговик", 123)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	sale := Sale{
-		SaleDate: time.Now(),
-		Client:   "чел с ником кто???",
-		Price:    322800,
-	}
+	fmt.Println(store.StorageContent(ctx))
 
-	res, err := store.AddSale(ctx, sale)
-	if err != nil {
-		log.Fatal(err)
-	}
+	err = store.RemoveProduct(ctx, "Снеговик", 1087)
 
-	fmt.Println(res.String())
-}
-
-type Sale struct {
-	SaleDate time.Time
-	Client   string
-	Price    int
+	fmt.Println(store.StorageContent(ctx))
 }

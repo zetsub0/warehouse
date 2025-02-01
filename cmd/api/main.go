@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"log/slog"
 
 	"warehouse/internal/adapters/db/mongo"
 	"warehouse/internal/config"
+	"warehouse/internal/logger"
 )
 
 func main() {
@@ -15,10 +16,18 @@ func main() {
 
 	cfg := config.ParseConfig()
 
+	myLog := logger.SetupLogger(cfg.Env)
+	slog.SetDefault(myLog)
+
+	slog.Error("test err")
+
 	store, err := mongo.New(ctx, cfg.Mongo)
 	if err != nil {
 		log.Fatal(err)
 	}
+	_ = store
+	// err = store.RemoveProduct(ctx, "asd", 21)
+
 	// err = store.UpsertProduct(ctx, "Стакан", 123)
 	// if err != nil {
 	// 	log.Fatal(err)
@@ -44,9 +53,9 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	fmt.Println(store.StorageContent(ctx))
+	// fmt.Println(store.StorageContent(ctx))
 
-	err = store.RemoveProduct(ctx, "Снеговик", 1087)
+	// err = store.RemoveProduct(ctx, "Снеговик", 1087)
 
-	fmt.Println(store.StorageContent(ctx))
+	// fmt.Println(store.StorageContent(ctx))
 }

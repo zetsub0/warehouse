@@ -54,7 +54,7 @@ func getDB(ctx context.Context, cfg config.Mongo, maxPoolSize uint64) (*mongo.Da
 		return nil, err
 	}
 
-	return client.Database(cfg.DbName), err
+	return client.Database(cfg.DbName), nil
 }
 
 // New returns Store adapter.
@@ -78,5 +78,5 @@ func New(ctx context.Context, cfg config.Mongo) (*Store, error) {
 		lowExecutionTime: 0,
 	}
 
-	return store, err
+	return store, nil
 }

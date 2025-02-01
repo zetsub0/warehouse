@@ -2,7 +2,6 @@ package mongo
 
 import (
 	"context"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,12 +18,10 @@ func (s *Store) StorageContent(ctx context.Context) ([]models.ProductCount, erro
 	defer func(cur *mongo.Cursor, ctx context.Context) {
 		err = cur.Close(ctx)
 		if err != nil {
-			log.Println(err)
 		}
 	}(cur, ctx)
 
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
@@ -53,7 +50,7 @@ func (s *Store) StorageContent(ctx context.Context) ([]models.ProductCount, erro
 // AddProduct adds quantity for product to storage.
 // If the product does not exist, it will be created with the name specified in the "product" parameter.
 func (s *Store) AddProduct(ctx context.Context, product string, count int32) error {
-	_, err := s.storageCl.UpdateOne(
+	if _, err := s.storageCl.UpdateOne(
 		ctx,
 		bson.M{"name": product},
 		bson.M{
@@ -62,14 +59,17 @@ func (s *Store) AddProduct(ctx context.Context, product string, count int32) err
 			},
 		},
 		options.Update().SetUpsert(true),
-	)
-	return err
+	); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // RemoveProduct subtracts quantity for product from storage.
 // If the quantity of an product reaches zero, the product will be deleted.
 func (s *Store) RemoveProduct(ctx context.Context, product string, count int32) error {
-	_, err := s.storageCl.UpdateOne(
+	if _, err := s.storageCl.UpdateOne(
 		ctx,
 		bson.M{"name": product},
 		bson.M{
@@ -77,15 +77,16 @@ func (s *Store) RemoveProduct(ctx context.Context, product string, count int32) 
 				"count": -count,
 			},
 		},
-	)
-
-	if err != nil {
+	); err != nil {
 		return err
 	}
 
-	_, err = s.storageCl.DeleteOne(
+	if _, err := s.storageCl.DeleteOne(
 		ctx,
 		bson.M{"name": product, "count": 0},
-	)
-	return err
+	); err != nil {
+		return err
+	}
+
+	return nil
 }

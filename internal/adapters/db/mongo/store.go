@@ -2,7 +2,6 @@ package mongo
 
 import (
 	"context"
-	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,10 +16,8 @@ type Store struct {
 	supplCl *mongo.Collection
 	delivCl *mongo.Collection
 
-	clientCl *mongo.Collection
-	salesCl  *mongo.Collection
-
-	lowExecutionTime time.Duration
+	customerCl *mongo.Collection
+	salesCl    *mongo.Collection
 }
 
 const (
@@ -30,8 +27,8 @@ const (
 	suppliersCollection  = "suppliers"
 	deliveriesCollection = "deliveries"
 
-	clientsCollection = "clients"
-	salesCollection   = "sales"
+	customersCollection = "customers"
+	salesCollection     = "sales"
 )
 
 func getDB(ctx context.Context, cfg config.Mongo, maxPoolSize uint64) (*mongo.Database, error) {
@@ -73,9 +70,8 @@ func New(ctx context.Context, cfg config.Mongo) (*Store, error) {
 		supplCl: db.Collection(suppliersCollection),
 		delivCl: db.Collection(deliveriesCollection),
 
-		clientCl:         db.Collection(clientsCollection),
-		salesCl:          db.Collection(salesCollection),
-		lowExecutionTime: 0,
+		customerCl: db.Collection(customersCollection),
+		salesCl:    db.Collection(salesCollection),
 	}
 
 	return store, err

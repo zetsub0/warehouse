@@ -23,13 +23,12 @@ type HTTPServer struct {
 }
 
 type Mongo struct {
-	Password         string        `yaml:"password"`
-	Login            string        `yaml:"login"`
-	LowExecutionTime time.Duration `yaml:"low_execution_time"`
-	ConnectCount     uint64        `yaml:"connect_count"`
-	Hosts            []string      `yaml:"hosts"`
-	DbName           string        `yaml:"db_name"`
-	AuthSource       string        `yaml:"auth_source"`
+	Password     string   `yaml:"password"`
+	Login        string   `yaml:"login"`
+	ConnectCount uint64   `yaml:"connect_count"`
+	Hosts        []string `yaml:"hosts"`
+	DbName       string   `yaml:"db_name"`
+	AuthSource   string   `yaml:"auth_source"`
 }
 
 func ParseConfig() *Config {

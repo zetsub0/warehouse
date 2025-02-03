@@ -19,6 +19,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	res, err := store.SearchCustomer(ctx, "wil")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, v := range res {
+		fmt.Println(v.Name)
+	}
+
+	// for range 10000 {
+	// 	err = store.SaveClient(ctx, models.Client{
+	// 		Name:    gofakeit.Name(),
+	// 		Address: gofakeit.Address().Address,
+	// 		Phone:   gofakeit.Phone(),
+	// 	})
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 	}
+	// }
+
 	// err = store.UpsertProduct(ctx, "Стакан", 123)
 	// if err != nil {
 	// 	log.Fatal(err)
@@ -44,9 +65,4 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	fmt.Println(store.StorageContent(ctx))
-
-	err = store.RemoveProduct(ctx, "Снеговик", 1087)
-
-	fmt.Println(store.StorageContent(ctx))
 }

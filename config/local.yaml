@@ -10,5 +10,4 @@ mongo:
   auth_source: "warehouse"
   password: "password"
   login: "warehouse"
-  low_execution_time: "10m"
   connect_count: 500

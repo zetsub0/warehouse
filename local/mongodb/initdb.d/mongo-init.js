@@ -1,4 +1,3 @@
-
 db = db.getSiblingDB('warehouse');
 
 db.createUser({
@@ -15,8 +14,15 @@ db.createUser({
 db.createCollection("storage");
 db.createCollection("product_list");
 
-db.createCollection("clients");
+db.createCollection("customers");
 db.createCollection("sales");
 
 db.createCollection("suppliers");
 db.createCollection("deliveries");
+
+customersCl = "customers"
+
+db.customersCl.createIndex(
+    {name: "text"},
+    {default_language: "russian", language_override: "language"}
+)

@@ -1,7 +1,7 @@
 package models
 
 type Customer struct {
-	Name    string
-	Address string
-	Phone   string
+	Name    string `bson:"name"`
+	Address string `bson:"address"`
+	Phone   string `bson:"phone"`
 }

@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"warehouse/internal/adapters/db/mongo"
 	"warehouse/internal/config"
+	"warehouse/internal/models"
 )
 
 func main() {
@@ -20,14 +20,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	res, err := store.SearchCustomer(ctx, "wil")
+	cust := models.Customer{
+		Name:       "Vasya",
+		Address:    "Tam tut",
+		Phone:      "+1234567890",
+		Additional: map[string]interface{}{"field_1": 123, "field_2:": map[string]interface{}{"1": 2}},
+	}
+
+	err = store.SaveCustomer(ctx, cust)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	for _, v := range res {
-		fmt.Println(v.Name)
-	}
+	// res, err := store.SearchCustomer(ctx, "wil")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	//
+	// for _, v := range res {
+	// 	fmt.Println(v.Name)
+	// }
 
 	// for range 10000 {
 	// 	err = store.SaveClient(ctx, models.Client{

@@ -10,6 +10,7 @@ import (
 	"warehouse/internal/models"
 )
 
+// AddSale saves sale to database
 func (s *Store) AddSale(ctx context.Context, sale models.Sale) error {
 	_, err := s.salesCl.InsertOne(ctx, sale)
 	if err != nil {

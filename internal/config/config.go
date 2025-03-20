@@ -16,10 +16,8 @@ type Config struct {
 
 type HTTPServer struct {
 	Address     string        `yaml:"address" env-default:"localhost:8080"`
-	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+	ReadTimeout time.Duration `yaml:"read_timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
-	User        string        `yaml:"user"`
-	Password    string        `yaml:"password" env:"HTTP_SERVER_PASSWORD"`
 }
 
 type Mongo struct {
@@ -41,11 +39,11 @@ func ParseConfig() *Config {
 		log.Fatalf("config file does not exist: %s", configPath)
 	}
 
-	var cfg Config
+	var cfg *Config
 
-	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+	if err := cleanenv.ReadConfig(configPath, cfg); err != nil {
 		log.Fatalf("cannot read config: %s", err)
 	}
 
-	return &cfg
+	return cfg
 }

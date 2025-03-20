@@ -1,6 +1,6 @@
 package models
 
-type ProductCount struct {
+type ProductQuantity struct {
 	Product Product
 	Count   uint32
 }

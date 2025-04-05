@@ -1,6 +1,8 @@
 package config
 
 import (
+	"errors"
+	"io/fs"
 	"log"
 	"os"
 	"time"
@@ -29,17 +31,19 @@ type Mongo struct {
 	AuthSource   string   `yaml:"auth_source"`
 }
 
+// ParseConfig parses config from yaml to Config
 func ParseConfig() *Config {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
-		log.Fatal("CONFIG_PATH is not set")
+		configPath = ".env"
+		log.Println("CONFIG_PATH is empty. parsing ENV")
 	}
 
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	if _, err := os.Stat(configPath); errors.Is(err, fs.ErrNotExist) {
 		log.Fatalf("config file does not exist: %s", configPath)
 	}
 
-	var cfg *Config
+	cfg := &Config{}
 
 	if err := cleanenv.ReadConfig(configPath, cfg); err != nil {
 		log.Fatalf("cannot read config: %s", err)

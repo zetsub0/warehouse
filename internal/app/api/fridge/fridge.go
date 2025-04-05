@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"warehouse/internal/app/api"
 	"warehouse/internal/models"
 )
 
@@ -15,33 +16,36 @@ type Storage interface {
 	RemoveProduct(ctx context.Context, product string, quantity int32) error
 }
 type API struct {
-	log    *slog.Logger
 	fridge Storage
 }
 
 func New(storage Storage, log *slog.Logger) *API {
 	return &API{
-		log:    log,
 		fridge: storage,
 	}
 }
 
 func (f *API) FridgeContent(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Content-Type") != "applications/json" {
-		f.log.Error("Content-Type not application/json")
-		http.Error(w, "invalid Content-Type", http.StatusBadRequest)
+		api.SendJSONResponse(
+			w,
+			http.StatusBadRequest,
+			api.ErrResponse{
+				Code:  http.StatusBadRequest,
+				Error: "Content-Type should be applications/json",
+			})
 	}
 
 	products, err := f.fridge.FridgeContent(r.Context())
 	if err != nil {
-		f.log.Error("failed to get fridge content", "error", err)
+		slog.Error("failed to get fridge content", "error", err)
 		http.Error(w, "failed to get fridge content", http.StatusInternalServerError)
 		return
 	}
 
 	response, err := json.Marshal(products)
 	if err != nil {
-		f.log.Error("failed to decode request", "error", err)
+		slog.Error("failed to decode request", "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -59,7 +63,7 @@ func (f *API) AddProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&productReq); err != nil {
-		f.log.Error("failed to decode request", "error", err)
+		slog.Error("failed to decode request", "error", err)
 		http.Error(w, "invalid request format", http.StatusBadRequest)
 		return
 	}
@@ -70,7 +74,7 @@ func (f *API) AddProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := f.fridge.AddProduct(r.Context(), productReq.Product, productReq.Quantity); err != nil {
-		f.log.Error("failed to add product", "product", productReq.Product, "quantity", productReq.Quantity, "error", err)
+		slog.Error("failed to add product", "product", productReq.Product, "quantity", productReq.Quantity, "error", err)
 		http.Error(w, "error adding product", http.StatusInternalServerError)
 		return
 	}
@@ -87,7 +91,7 @@ func (f *API) RemoveProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&productReq); err != nil {
-		f.log.Error("failed to decode request", "error", err)
+		slog.Error("failed to decode request", "error", err)
 		http.Error(w, "invalid request format", http.StatusBadRequest)
 		return
 	}
@@ -98,7 +102,7 @@ func (f *API) RemoveProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := f.fridge.RemoveProduct(r.Context(), productReq.Product, productReq.Quantity); err != nil {
-		f.log.Error("failed to remove product", "product", productReq.Product, "quantity", productReq.Quantity, "error", err)
+		slog.Error("failed to remove product", "product", productReq.Product, "quantity", productReq.Quantity, "error", err)
 		http.Error(w, "error removing product", http.StatusInternalServerError)
 		return
 	}

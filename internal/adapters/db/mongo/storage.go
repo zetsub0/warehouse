@@ -11,8 +11,8 @@ import (
 )
 
 // StorageContent returns  all products from storage with their quantities.
-func (s *Store) StorageContent(ctx context.Context) ([]models.ProductCount, error) {
-	var res []models.ProductCount
+func (s *Store) StorageContent(ctx context.Context) ([]models.ProductQuantity, error) {
+	var res []models.ProductQuantity
 
 	cur, err := s.storageCl.Find(ctx, bson.M{})
 
@@ -38,7 +38,7 @@ func (s *Store) StorageContent(ctx context.Context) ([]models.ProductCount, erro
 			return nil, err
 		}
 
-		res = append(res, models.ProductCount{
+		res = append(res, models.ProductQuantity{
 			Product: models.Product{Name: raw.Name},
 			Count:   raw.Count,
 		})
